@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.1.RELEASE</version>
+        <relativePath/>
+    </parent>
+    <groupId>com.github.stevenkin</groupId>
+    <artifactId>jim</artifactId>
+    <version>1.0</version>
+    <modules>
+        <module>jim-gate</module>
+        <module>jim-gate/tcp-gate</module>
+        <module>jim-gate/ws-gate</module>
+        <module>jim-logic</module>
+        <module>jim-forward</module>
+    </modules>
+    <packaging>pom</packaging>
+    <name>jim</name>
+    <description>JIM is a Instant messaging system, base on netty</description>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>4.1.48.Final</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
