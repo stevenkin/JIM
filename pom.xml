@@ -12,11 +12,13 @@
     <artifactId>jim</artifactId>
     <version>1.0</version>
     <modules>
-        <module>jim-gate</module>
-        <module>jim-gate/tcp-gate</module>
-        <module>jim-gate/ws-gate</module>
-        <module>jim-logic</module>
-        <module>jim-forward</module>
+
+        <module>gateway</module>
+        <module>client</module>
+        <module>server</module>
+        <module>auth</module>
+        <module>open</module>
+        <module>call</module>
     </modules>
     <packaging>pom</packaging>
     <name>jim</name>

@@ -6,15 +6,10 @@
         <artifactId>jim</artifactId>
         <groupId>com.github.stevenkin</groupId>
         <version>1.0</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>tcp-gate</artifactId>
+    <artifactId>auth</artifactId>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
 
 </project>
