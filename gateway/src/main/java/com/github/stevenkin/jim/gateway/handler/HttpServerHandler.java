@@ -118,12 +118,10 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 String uri = req.uri();
                 int index = uri.indexOf("?");
                 String path = null;
-                String originalParam = null;
                 if (index == -1) {
                     path = uri;
                 } else {
                     path = uri.substring(0, index);
-                    originalParam = uri.substring(index + 1, uri.length());
                 }
 
                 if ("/favicon.ico".equals(path)) {

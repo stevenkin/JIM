@@ -1,0 +1,22 @@
+gateway:
+  host: 0.0.0.0
+  port: 8080
+  path: /
+  bossLoopGroupThreads: 0
+  workerLoopGroupThreads: 0
+  useCompressionHandler: false
+  connectTimeoutMillis: 30000
+  soBacklog: 128
+  writeSpinCount: 16
+  writeBufferHighWaterMark: 65536
+  writeBufferLowWaterMark: 32768
+  soRcvbuf: -1
+  soSndbuf: -1
+  tcpNodelay: true
+  soKeepalive: false
+  soLinger: -1
+  allowHalfClosure: false
+  readerIdleTimeSeconds: 0
+  writerIdleTimeSeconds: 0
+  allIdleTimeSeconds: 0
+  maxFramePayloadLength: 65536

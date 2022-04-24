@@ -9,29 +9,22 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import io.netty.handler.codec.http.cors.CorsConfig;
-import io.netty.handler.codec.http.cors.CorsConfigBuilder;
-import io.netty.handler.codec.http.cors.CorsHandler;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.handler.ssl.SslContext;
-import io.netty.util.concurrent.DefaultEventExecutorGroup;
-import io.netty.util.concurrent.EventExecutorGroup;
-import org.springframework.util.StringUtils;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 
-import javax.net.ssl.SSLException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-public class WebsocketServer {
+public class WebsocketServer implements SmartInitializingSingleton {
     private final GatewayProperties config;
 
     public WebsocketServer(GatewayProperties config) {
         this.config = config;
     }
 
-    public void init() throws InterruptedException {
+    public void init() {
         EventLoopGroup boss = new NioEventLoopGroup(this.config.getBossLoopGroupThreads());
         EventLoopGroup worker = new NioEventLoopGroup(this.config.getWorkerLoopGroupThreads());
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -73,5 +66,10 @@ public class WebsocketServer {
             boss.shutdownGracefully().syncUninterruptibly();
             worker.shutdownGracefully().syncUninterruptibly();
         }));
+    }
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        init();
     }
 }
