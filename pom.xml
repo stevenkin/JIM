@@ -19,6 +19,7 @@
         <module>auth</module>
         <module>open</module>
         <module>call</module>
+        <module>serialize</module>
     </modules>
     <packaging>pom</packaging>
     <name>jim</name>
