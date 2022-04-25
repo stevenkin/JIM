@@ -7,5 +7,7 @@ public interface Serialization {
 
     ByteBuf serialize(PongPackage pong);
 
+    ByteBuf serialize( LoginPackage login);
+
     Package deserialize(ByteBuf byteBuf);
 }
