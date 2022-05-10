@@ -14,12 +14,10 @@
     <modules>
 
         <module>gateway</module>
-        <module>client</module>
-        <module>server</module>
-        <module>auth</module>
-        <module>open</module>
-        <module>call</module>
         <module>serialize</module>
+        <module>business</module>
+        <module>forward</module>
+        <module>discovery</module>
     </modules>
     <packaging>pom</packaging>
     <name>jim</name>
