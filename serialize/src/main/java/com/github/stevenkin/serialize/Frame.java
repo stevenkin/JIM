@@ -3,7 +3,7 @@ package com.github.stevenkin.serialize;
 import lombok.Data;
 
 @Data
-public class CustomFrame {
+public class Frame {
     private int opCode;
 
     private int length;
