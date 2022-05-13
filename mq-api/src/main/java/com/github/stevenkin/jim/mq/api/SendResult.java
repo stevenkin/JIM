@@ -1,4 +1,4 @@
-package com.github.stevenkin.mq.api;
+package com.github.stevenkin.jim.mq.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,11 +10,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SendResult {
-    private boolean success;
-
     private String msg;
 
     private Map<String, Object> attach;
-
-    private Exception exception;
 }

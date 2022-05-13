@@ -31,6 +31,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commons.lang3.version}</version>
         </dependency>
+
+        <dependency>
+            <artifactId>mq-api</artifactId>
+            <groupId>com.github.stevenkin</groupId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 

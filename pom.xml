@@ -12,13 +12,13 @@
     <artifactId>jim</artifactId>
     <version>1.0</version>
     <modules>
-
         <module>gateway</module>
         <module>serialize</module>
         <module>business</module>
         <module>forward</module>
         <module>discovery</module>
         <module>mq-api</module>
+        <module>mq-redis</module>
     </modules>
     <packaging>pom</packaging>
     <name>jim</name>

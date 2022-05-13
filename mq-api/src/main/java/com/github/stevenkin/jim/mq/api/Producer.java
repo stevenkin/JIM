@@ -1,4 +1,4 @@
-package com.github.stevenkin.mq.api;
+package com.github.stevenkin.jim.mq.api;
 
 import com.github.stevenkin.serialize.Package;
 
