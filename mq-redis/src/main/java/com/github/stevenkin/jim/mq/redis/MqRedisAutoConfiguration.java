@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,7 +18,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class MqRedisAutoConfiguration {
     @Autowired
     private RedisTemplate<String, Package> redisTemplate;
-    @Value("${spring.redis.topic}")
+    @Value("${jim.mq.redis.topic}")
     private String topic;
 
     @Bean
@@ -31,6 +30,6 @@ public class MqRedisAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(Consumer.class)
     public Consumer consumer() {
-        return new RedisMqConsumer(redisTemplate);
+        return new RedisMqConsumer(redisTemplate, topic);
     }
 }
