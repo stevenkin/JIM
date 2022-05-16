@@ -10,4 +10,6 @@ public interface Consumer {
     Package poll(int mills) throws Exception;
 
     Package poll() throws Exception;
+
+    void close() throws Exception;
 }

@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.stevenkin.jim.mq.redis.MqRedisAutoConfiguration.java
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.github.stevenkin.jim.mq.redis.MqRedisAutoConfiguration

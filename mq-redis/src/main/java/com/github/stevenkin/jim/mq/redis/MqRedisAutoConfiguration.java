@@ -10,11 +10,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
 @ConditionalOnClass({Producer.class, Consumer.class})
 @ConditionalOnProperty(prefix = "spring.redis", value = "enabled", matchIfMissing = true)
+@Import(RedisConfig.class)
 public class MqRedisAutoConfiguration {
     @Autowired
     private RedisTemplate<String, Package> redisTemplate;

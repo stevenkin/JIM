@@ -31,7 +31,12 @@ public class RedisMqConsumer implements Consumer {
         if (StringUtils.isEmpty(topic)) {
             throw new UnsupportedOperationException("consumer need bind topic");
         }
-        Package pkg = redisTemplate.opsForList().leftPop(topic, mills, TimeUnit.MILLISECONDS);
+        Package pkg = null;
+        try {
+            pkg = redisTemplate.opsForList().leftPop(topic, mills, TimeUnit.MILLISECONDS);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
         return pkg;
     }
 
@@ -40,5 +45,10 @@ public class RedisMqConsumer implements Consumer {
         Package pkg = null;
         while ((pkg = poll(10000)) == null);
         return pkg;
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 }
