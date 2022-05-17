@@ -171,6 +171,10 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                             }
 
                             pipeline.addLast(new ChannelHandler[]{new WebSocketServerHandler()});
+                            pipeline.addLast(new ChannelHandler[]{new DecryptFrameHandler(encryptKeyService)});
+                            pipeline.addLast(new ChannelHandler[]{new EncryptFrameHandler(encryptKeyService)});
+                            pipeline.addLast(new ChannelHandler[]{new GatewayServerHandler()});
+
                             HttpHeaders headers1 = new DefaultHttpHeaders().add("SERVER_PUBLIC_KEY", encryptKeyService.getPublicKey());
                             handshaker.handshake(channel, req, headers1, channel.newPromise()).addListener((future) -> {
                                 if (future.isSuccess()) {
