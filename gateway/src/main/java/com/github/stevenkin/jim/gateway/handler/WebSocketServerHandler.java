@@ -1,5 +1,7 @@
 package com.github.stevenkin.jim.gateway.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.github.stevenkin.jim.gateway.encrypt.EncryptFrame;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -26,7 +28,8 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         } else if (frame instanceof TextWebSocketFrame) {
             TextWebSocketFrame textWebSocketFrame = (TextWebSocketFrame) frame;
             String content = textWebSocketFrame.text();
-            ctx.fireChannelRead(content);
+            EncryptFrame encryptFrame = JSON.parseObject(content, EncryptFrame.class);
+            ctx.fireChannelRead(encryptFrame);
         } else if (frame instanceof BinaryWebSocketFrame) {
             log.info("ignore BinaryWebSocketFrame {}", frame);
         }

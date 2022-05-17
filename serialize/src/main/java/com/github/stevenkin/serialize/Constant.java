@@ -1,6 +1,8 @@
 package com.github.stevenkin.serialize;
 
 public interface Constant {
+    String CLIENT_PUBLIC_KEY = "client_public_key";
+
     byte[] BUSINESS_MAGIC = {(byte) 0xc3, (byte) 0x11, (byte) 0xa3, (byte) 0x65};
 
     byte[] PING_MAGIC = {(byte) 0xc3, (byte) 0x15, (byte) 0xa7, (byte) 0x65};

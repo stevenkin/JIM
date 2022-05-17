@@ -30,14 +30,6 @@ public class KeyPairGenUtil {
         return new HashMap<>(keyMap);
     }
 
-    public static String encrypt(String str) throws Exception {
-        return encrypt(str, keyMap.get(0));
-    }
-
-    public static String decrypt(String str) throws Exception {
-        return decrypt(str, keyMap.get(1));
-    }
-
     public static String encrypt(String str, String publicKey) throws Exception {
         byte[] decoded = java.util.Base64.getDecoder().decode(publicKey);
         RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(decoded));
@@ -77,6 +69,10 @@ public class KeyPairGenUtil {
 
     public static String getPublicKey() {
         return keyMap.get(0);
+    }
+
+    public static String getPrivateKey() {
+        return keyMap.get(1);
     }
 }
 

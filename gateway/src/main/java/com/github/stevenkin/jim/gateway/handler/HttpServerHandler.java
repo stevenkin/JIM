@@ -21,6 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.InputStream;
 import java.util.Set;
 
+import static com.github.stevenkin.serialize.Constant.CLIENT_PUBLIC_KEY;
+
 @Slf4j
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final GatewayProperties config;
@@ -31,7 +33,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private static ByteBuf forbiddenByteBuf = null;
     private static ByteBuf internalServerErrorByteBuf = null;
 
-    private static String CLIENT_PUBLIC_KEY = "client_public_key";
 
     private static ByteBuf buildStaticRes(String resPath) {
         try {

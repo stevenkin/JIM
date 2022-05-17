@@ -11,37 +11,38 @@ import java.security.NoSuchAlgorithmException;
 @Service
 @Slf4j
 public class EncryptKeyService implements InitializingBean {
-    private String aesKey;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         KeyPairGenUtil.genKeyPair();
-        this.aesKey = SecureRandomUtil.getRandom(16);
     }
 
     public void refresh() {
         try {
             KeyPairGenUtil.genKeyPair();
-            this.aesKey = SecureRandomUtil.getRandom(16);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             log.error("refresh key error {}", e);
         }
     }
 
-    public String getAesKey() {
-        return this.aesKey;
+    public String genAesKey() {
+        return SecureRandomUtil.getRandom(16);
     }
 
     public String getPublicKey() {
         return KeyPairGenUtil.getPublicKey();
     }
 
-    public String encrypt(String data) throws Exception {
-        return KeyPairGenUtil.encrypt(data);
+    public String getPrivateKey() {
+        return KeyPairGenUtil.getPrivateKey();
     }
 
-    public String decrypt(String data) throws Exception {
-        return KeyPairGenUtil.decrypt(data);
+    public String encrypt(String data, String key) throws Exception {
+        return KeyPairGenUtil.encrypt(data, key);
+    }
+
+    public String decrypt(String data, String key) throws Exception {
+        return KeyPairGenUtil.decrypt(data, key);
     }
 }
