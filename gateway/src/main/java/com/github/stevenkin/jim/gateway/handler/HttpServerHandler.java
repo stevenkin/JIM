@@ -1,6 +1,7 @@
 package com.github.stevenkin.jim.gateway.handler;
 
 import com.github.stevenkin.jim.gateway.config.GatewayProperties;
+import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
@@ -11,9 +12,11 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -21,11 +24,14 @@ import java.util.Set;
 @Slf4j
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final GatewayProperties config;
+    private final EncryptKeyService encryptKeyService;
     private static ByteBuf faviconByteBuf = null;
     private static ByteBuf notFoundByteBuf = null;
     private static ByteBuf badRequestByteBuf = null;
     private static ByteBuf forbiddenByteBuf = null;
     private static ByteBuf internalServerErrorByteBuf = null;
+
+    private static String CLIENT_PUBLIC_KEY = "client_public_key";
 
     private static ByteBuf buildStaticRes(String resPath) {
         try {
@@ -44,8 +50,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         return null;
     }
 
-    public HttpServerHandler(GatewayProperties config) {
+    public HttpServerHandler(GatewayProperties config, EncryptKeyService service) {
         this.config = config;
+        this.encryptKeyService = service;
     }
 
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
@@ -118,11 +125,15 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                 String uri = req.uri();
                 int index = uri.indexOf("?");
                 String path = null;
+                String originalParam = null;
                 if (index == -1) {
                     path = uri;
                 } else {
                     path = uri.substring(0, index);
+                    originalParam = uri.substring(index + 1, uri.length());
                 }
+
+                final String param = originalParam;
 
                 if ("/favicon.ico".equals(path)) {
                     if (faviconByteBuf != null) {
@@ -159,10 +170,25 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                             }
 
                             pipeline.addLast(new ChannelHandler[]{new WebSocketServerHandler()});
-                            handshaker.handshake(channel, req).addListener((future) -> {
+                            HttpHeaders headers1 = new DefaultHttpHeaders().add("SERVER_PUBLIC_KEY", encryptKeyService.getPublicKey());
+                            handshaker.handshake(channel, req, headers1, channel.newPromise()).addListener((future) -> {
                                 if (future.isSuccess()) {
                                     ChannelId id = ctx.channel().id();
                                     log.info("channel {} handshake success", id.toString());
+                                    ParameterMap parameterMap = null;
+                                    if (StringUtils.isEmpty(param)) {
+                                        log.error("build ws connection need client public key");
+                                        handshaker.close(channel, new CloseWebSocketFrame());
+                                    }
+                                    parameterMap = new ParameterMap(param);
+                                    if (StringUtils.isEmpty(parameterMap.getParameter(CLIENT_PUBLIC_KEY))) {
+                                        log.error("build ws connection need client public key");
+                                        handshaker.close(channel, new CloseWebSocketFrame());
+                                    }
+                                    String s = parameterMap.getParameter(CLIENT_PUBLIC_KEY);
+                                    AttributeKey<String> clientPublicKey = AttributeKey.newInstance(CLIENT_PUBLIC_KEY);
+                                    Attribute<String> attr = channel.attr(clientPublicKey);
+                                    attr.set(s);
                                 } else {
                                     handshaker.close(channel, new CloseWebSocketFrame());
                                 }

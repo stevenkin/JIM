@@ -23,8 +23,12 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
             ctx.writeAndFlush(new PongWebSocketFrame(frame.content().retain()));
         } else if (frame instanceof CloseWebSocketFrame) {
             ctx.writeAndFlush(frame.retainedDuplicate()).addListener(ChannelFutureListener.CLOSE);
-        } else if (frame instanceof TextWebSocketFrame || frame instanceof BinaryWebSocketFrame) {
-            ctx.writeAndFlush(frame.retainedDuplicate());
+        } else if (frame instanceof TextWebSocketFrame) {
+            TextWebSocketFrame textWebSocketFrame = (TextWebSocketFrame) frame;
+            String content = textWebSocketFrame.text();
+            ctx.fireChannelRead(content);
+        } else if (frame instanceof BinaryWebSocketFrame) {
+            log.info("ignore BinaryWebSocketFrame {}", frame);
         }
     }
 }
