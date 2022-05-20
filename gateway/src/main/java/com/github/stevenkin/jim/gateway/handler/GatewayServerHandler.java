@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GatewayServerHandler extends SimpleChannelInboundHandler<Package> {
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pkg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Package pkg) throws Exception {
         log.info("receive package {}", pkg);
+        ctx.writeAndFlush(pkg);
     }
 }

@@ -15,8 +15,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, WebSocketFrame webSocketFrame) throws Exception {
         ByteBuf content = webSocketFrame.content();
-        String s = content.toString(CharsetUtil.UTF_8);
-        log.info("read websocket frame {}", s);
+        log.info("read websocket frame {}", content);
         handleWebSocketFrame(channelHandlerContext, webSocketFrame);
     }
 

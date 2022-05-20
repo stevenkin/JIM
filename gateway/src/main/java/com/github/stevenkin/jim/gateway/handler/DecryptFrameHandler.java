@@ -9,9 +9,11 @@ import com.github.stevenkin.serialize.Package;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 public class DecryptFrameHandler extends MessageToMessageDecoder<EncryptFrame> {
     private EncryptKeyService encryptKeyService;
 
@@ -21,11 +23,13 @@ public class DecryptFrameHandler extends MessageToMessageDecoder<EncryptFrame> {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, EncryptFrame encryptFrame, List<Object> list) throws Exception {
+        log.info("read encrypt frame {}", encryptFrame);
         String encryptData = encryptFrame.getEncryptData();
         String encryptAesKey = encryptFrame.getEncryptAesKey();
 
         String aesKey = encryptKeyService.decrypt(encryptAesKey, encryptKeyService.getPrivateKey());
-        String data = ConvertUtils.hexStringToString(AES.decryptFromBase64(encryptData, aesKey));
+        String data = AES.decryptFromBase64(encryptData, aesKey);
+        log.info("data {}", data);
         Package pkg = JSON.parseObject(data, Package.class);
         list.add(pkg);
     }

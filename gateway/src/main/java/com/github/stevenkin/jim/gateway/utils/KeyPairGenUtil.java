@@ -1,5 +1,7 @@
 package com.github.stevenkin.jim.gateway.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.crypto.Cipher;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
@@ -10,6 +12,7 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class KeyPairGenUtil {
     private static final int KEY_SIZE = 2048;
     private static Map<Integer, String> keyMap = new HashMap();
@@ -27,6 +30,8 @@ public class KeyPairGenUtil {
         String privateKeyString = java.util.Base64.getEncoder().encodeToString(privateKey.getEncoded());
         keyMap.put(0, publicKeyString);
         keyMap.put(1, privateKeyString);
+        log.info("server public key {}", publicKeyString);
+        log.info("server private key {}", privateKeyString);
         return new HashMap<>(keyMap);
     }
 

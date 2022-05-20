@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 public class AES {
     public AES() {
@@ -59,8 +60,8 @@ public class AES {
 
     public static String encryptToBase64(String data, String key) {
         try {
-            byte[] valueByte = encrypt(data.getBytes("UTF-8"), key.getBytes("UTF-8"));
-            return new String(Base64Sign.encode(valueByte));
+            byte[] valueByte = encrypt(data.getBytes("UTF-8"), Base64.getDecoder().decode(key));
+            return new String(Base64.getEncoder().encode(valueByte));
         } catch (UnsupportedEncodingException var3) {
             throw new RuntimeException("encrypt fail!", var3);
         }
@@ -68,8 +69,8 @@ public class AES {
 
     public static String decryptFromBase64(String data, String key) {
         try {
-            byte[] originalData = Base64Sign.decode(data.getBytes());
-            byte[] valueByte = decrypt(originalData, key.getBytes("UTF-8"));
+            byte[] originalData = Base64.getDecoder().decode(data);
+            byte[] valueByte = decrypt(originalData, Base64.getDecoder().decode(key));
             return new String(valueByte, "UTF-8");
         } catch (UnsupportedEncodingException var4) {
             throw new RuntimeException("decrypt fail!", var4);
@@ -99,7 +100,7 @@ public class AES {
         KeyGenerator keygen = null;
 
         try {
-            keygen = KeyGenerator.getInstance("AES/CBC/PKCS5Padding");
+            keygen = KeyGenerator.getInstance("AES");
         } catch (NoSuchAlgorithmException var3) {
             throw new RuntimeException(" genarateRandomKey fail!", var3);
         }
@@ -111,7 +112,7 @@ public class AES {
     }
 
     public static String genarateRandomKeyWithBase64() {
-        return new String(Base64Sign.encode(genarateRandomKey()));
+        return new String(Base64.getEncoder().encode(genarateRandomKey()));
     }
 
 }

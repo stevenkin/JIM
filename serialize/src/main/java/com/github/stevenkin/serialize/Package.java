@@ -2,7 +2,7 @@ package com.github.stevenkin.serialize;
 
 import lombok.*;
 
-@Getter
+@Data
 @ToString
 @NoArgsConstructor
 public class Package {

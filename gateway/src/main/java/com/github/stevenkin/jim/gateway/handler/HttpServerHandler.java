@@ -1,5 +1,6 @@
 package com.github.stevenkin.jim.gateway.handler;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.stevenkin.jim.gateway.config.GatewayProperties;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
 import io.netty.buffer.ByteBuf;
@@ -8,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
@@ -191,9 +193,15 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                                         handshaker.close(channel, new CloseWebSocketFrame());
                                     }
                                     String s = parameterMap.getParameter(CLIENT_PUBLIC_KEY);
-                                    AttributeKey<String> clientPublicKey = AttributeKey.newInstance(CLIENT_PUBLIC_KEY);
+                                    AttributeKey<String> clientPublicKey = AttributeKey.valueOf(CLIENT_PUBLIC_KEY);
                                     Attribute<String> attr = channel.attr(clientPublicKey);
                                     attr.set(s);
+
+                                    JSONObject jsonObject = new JSONObject();
+                                    jsonObject.put("SERVER_PUBLIC_KEY", encryptKeyService.getPublicKey());
+                                    String jsonString = jsonObject.toJSONString();
+                                    TextWebSocketFrame frame = new TextWebSocketFrame(jsonString);
+                                    channel.writeAndFlush(frame);
                                 } else {
                                     handshaker.close(channel, new CloseWebSocketFrame());
                                 }
