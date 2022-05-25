@@ -14,11 +14,11 @@
     <modules>
         <module>gateway</module>
         <module>serialize</module>
-        <module>business</module>
         <module>forward</module>
         <module>discovery</module>
         <module>mq-api</module>
         <module>mq-redis</module>
+        <module>business-server</module>
     </modules>
     <packaging>pom</packaging>
     <name>jim</name>

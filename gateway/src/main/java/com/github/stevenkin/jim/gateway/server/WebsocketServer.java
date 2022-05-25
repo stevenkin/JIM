@@ -3,6 +3,7 @@ package com.github.stevenkin.jim.gateway.server;
 import com.github.stevenkin.jim.gateway.config.GatewayProperties;
 import com.github.stevenkin.jim.gateway.handler.HttpServerHandler;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
+import com.github.stevenkin.jim.mq.api.Producer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -21,10 +22,12 @@ import java.net.UnknownHostException;
 public class WebsocketServer implements SmartInitializingSingleton {
     private final GatewayProperties config;
     private EncryptKeyService encryptKeyService;
+    private Producer producer;
 
-    public WebsocketServer(GatewayProperties config, EncryptKeyService service) {
+    public WebsocketServer(GatewayProperties config, EncryptKeyService service, Producer producer) {
         this.config = config;
         this.encryptKeyService = service;
+        this.producer = producer;
     }
 
     public void init() {
@@ -36,7 +39,7 @@ public class WebsocketServer implements SmartInitializingSingleton {
                 ChannelPipeline pipeline = ch.pipeline();
                 pipeline.addLast(new ChannelHandler[]{new HttpServerCodec()});
                 pipeline.addLast(new ChannelHandler[]{new HttpObjectAggregator(131072)});
-                pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(config, encryptKeyService)});
+                pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(config, encryptKeyService, producer)});
             }
         });
         if (this.config.getSoRcvbuf() != -1) {

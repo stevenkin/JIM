@@ -9,10 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>gateway</artifactId>
+    <artifactId>business-server</artifactId>
 
     <properties>
         <commons.lang3.version>3.4</commons.lang3.version>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -33,6 +35,5 @@
             <version>1.0</version>
         </dependency>
     </dependencies>
-
 
 </project>

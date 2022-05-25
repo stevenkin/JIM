@@ -3,10 +3,12 @@ package com.github.stevenkin.jim.gateway.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.github.stevenkin.jim.gateway.config.GatewayProperties;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
+import com.github.stevenkin.jim.mq.api.Producer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -22,6 +24,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
 import java.util.Set;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.github.stevenkin.serialize.Constant.CLIENT_PUBLIC_KEY;
 
@@ -35,6 +39,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private static ByteBuf forbiddenByteBuf = null;
     private static ByteBuf internalServerErrorByteBuf = null;
 
+    private Producer producer;
 
     private static ByteBuf buildStaticRes(String resPath) {
         try {
@@ -53,9 +58,10 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         return null;
     }
 
-    public HttpServerHandler(GatewayProperties config, EncryptKeyService service) {
+    public HttpServerHandler(GatewayProperties config, EncryptKeyService service, Producer producer) {
         this.config = config;
         this.encryptKeyService = service;
+        this.producer = producer;
     }
 
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
@@ -175,7 +181,16 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                             pipeline.addLast(new ChannelHandler[]{new WebSocketServerHandler()});
                             pipeline.addLast(new ChannelHandler[]{new DecryptFrameHandler(encryptKeyService)});
                             pipeline.addLast(new ChannelHandler[]{new EncryptFrameHandler(encryptKeyService)});
-                            pipeline.addLast(new ChannelHandler[]{new GatewayServerHandler()});
+
+                            ThreadFactory threadFactory = new ThreadFactory() {
+                                private AtomicInteger count = new AtomicInteger();
+                                @Override
+                                public Thread newThread(Runnable r) {
+                                    return new Thread(r, "netty-context-business-" + count.incrementAndGet());
+                                }
+                            };
+                            NioEventLoopGroup business = new NioEventLoopGroup(200,threadFactory);
+                            pipeline.addLast(business, new ChannelHandler[]{new GatewayServerHandler(producer)});
 
                             HttpHeaders headers1 = new DefaultHttpHeaders().add("SERVER_PUBLIC_KEY", encryptKeyService.getPublicKey());
                             handshaker.handshake(channel, req, headers1, channel.newPromise()).addListener((future) -> {
@@ -201,7 +216,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                                     jsonObject.put("SERVER_PUBLIC_KEY", encryptKeyService.getPublicKey());
                                     String jsonString = jsonObject.toJSONString();
                                     TextWebSocketFrame frame = new TextWebSocketFrame(jsonString);
-                                    channel.writeAndFlush(frame);
+                                    channel.writeAndFlush(frame).addListener(f -> {
+                                        if (!f.isSuccess()) {
+                                            handshaker.close(channel, new CloseWebSocketFrame());
+                                        }
+                                    });
                                 } else {
                                     handshaker.close(channel, new CloseWebSocketFrame());
                                 }

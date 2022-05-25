@@ -24,7 +24,7 @@ public class Package {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
-    private static class Header {
+    public static class Header {
         private String command;
 
         private String channelId;
