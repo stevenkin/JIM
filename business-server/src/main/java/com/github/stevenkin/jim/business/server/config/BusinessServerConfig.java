@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.ExecutorService;
+
 @Configuration
 public class BusinessServerConfig {
     @Autowired
     private BusinessServerProperties properties;
+    @Autowired
+    private ExecutorService executorService;
 
     @Bean
     public Serialization serialization() {
@@ -19,6 +23,6 @@ public class BusinessServerConfig {
 
     @Bean
     public BusinessNettyServer businessNettyServer(Serialization serialization) {
-        return new BusinessNettyServer(properties, serialization);
+        return new BusinessNettyServer(properties, serialization, executorService);
     }
 }

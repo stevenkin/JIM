@@ -14,15 +14,18 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-public class WebsocketServer implements SmartInitializingSingleton {
+public class WebsocketServer implements SmartInitializingSingleton, ApplicationListener<ContextClosedEvent> {
     private final GatewayProperties config;
     private EncryptKeyService encryptKeyService;
     private Producer producer;
+    private ChannelFuture channelFuture;
 
     public WebsocketServer(GatewayProperties config, EncryptKeyService service, Producer producer) {
         this.config = config;
@@ -50,7 +53,6 @@ public class WebsocketServer implements SmartInitializingSingleton {
             bootstrap.childOption(ChannelOption.SO_SNDBUF, this.config.getSoSndbuf());
         }
 
-        ChannelFuture channelFuture;
         if ("0.0.0.0".equals(this.config.getHost())) {
             channelFuture = bootstrap.bind(this.config.getPort());
         } else {
@@ -77,5 +79,12 @@ public class WebsocketServer implements SmartInitializingSingleton {
     @Override
     public void afterSingletonsInstantiated() {
         init();
+    }
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent contextClosedEvent) {
+        if (channelFuture != null) {
+            channelFuture.channel().close();
+        }
     }
 }
