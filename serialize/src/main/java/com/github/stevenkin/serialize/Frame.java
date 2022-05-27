@@ -6,7 +6,5 @@ import lombok.Data;
 public class Frame {
     private int opCode;
 
-    private int length;
-
     private byte[] payload;
 }

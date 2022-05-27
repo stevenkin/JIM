@@ -21,4 +21,8 @@ public interface Constant {
 
     int opPong = 10;
 
+    String SEND_SUCCESS = "SEND_SUCCESS";
+
+    String SEND_FAILED = "send_failed";
+
 }
