@@ -21,8 +21,8 @@ gateway:
   host: 0.0.0.0
   port: 8080
   path: /
-  bossLoopGroupThreads: 0
-  workerLoopGroupThreads: 0
+  bossLoopGroupThreads: 1
+  workerLoopGroupThreads: 4
   useCompressionHandler: false
   connectTimeoutMillis: 30000
   soBacklog: 128

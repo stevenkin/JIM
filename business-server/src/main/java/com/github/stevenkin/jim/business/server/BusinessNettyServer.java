@@ -1,6 +1,7 @@
 package com.github.stevenkin.jim.business.server;
 
 import com.github.stevenkin.jim.business.server.config.BusinessServerProperties;
+import com.github.stevenkin.serialize.Serialization;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -9,16 +10,23 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
-public class BusinessNettyServer implements SmartInitializingSingleton {
+public class BusinessNettyServer implements SmartInitializingSingleton, ApplicationListener<ContextClosedEvent> {
     private final BusinessServerProperties config;
 
-    public BusinessNettyServer(BusinessServerProperties config) {
+    private final Serialization serialization;
+
+    private ChannelFuture channelFuture;
+
+    public BusinessNettyServer(BusinessServerProperties config, Serialization serialization) {
         this.config = config;
+        this.serialization = serialization;
     }
 
     public void init() {
@@ -51,7 +59,6 @@ public class BusinessNettyServer implements SmartInitializingSingleton {
             bootstrap.childOption(ChannelOption.SO_SNDBUF, this.config.getSoSndbuf());
         }
 
-        ChannelFuture channelFuture;
         if ("0.0.0.0".equals(this.config.getHost())) {
             channelFuture = bootstrap.bind(this.config.getPort());
         } else {
@@ -78,5 +85,12 @@ public class BusinessNettyServer implements SmartInitializingSingleton {
     @Override
     public void afterSingletonsInstantiated() {
         init();
+    }
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent contextClosedEvent) {
+        if (channelFuture != null) {
+            channelFuture.channel().close();
+        }
     }
 }
