@@ -1,6 +1,6 @@
 package com.github.stevenkin.jim.business.server.config;
 
-import com.github.stevenkin.jim.business.server.utils.Executors;
+import com.github.stevenkin.jim.business.server.utils.ExecutorUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,6 +28,6 @@ public class ThreadPoolConfig
 
     @Bean(name = "executorService")
     public ExecutorService executorService() {
-        return Executors.newExecutor(corePoolSize, maxPoolSize, queueCapacity, "business-");
+        return ExecutorUtil.newExecutor(corePoolSize, maxPoolSize, queueCapacity, "business-");
     }
 }

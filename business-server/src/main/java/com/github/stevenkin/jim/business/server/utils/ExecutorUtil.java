@@ -3,8 +3,8 @@ package com.github.stevenkin.jim.business.server.utils;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Executors {
-    private Executors(){}
+public class ExecutorUtil {
+    private ExecutorUtil(){}
 
     public static ExecutorService newExecutor(Integer threadNum, Integer queueSize, final String threadNamePrefix){
         return newExecutor(threadNum, threadNum + 1, queueSize, threadNamePrefix);
