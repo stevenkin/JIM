@@ -37,14 +37,25 @@ public class WebsocketServer implements SmartInitializingSingleton, ApplicationL
         EventLoopGroup boss = new NioEventLoopGroup(this.config.getBossLoopGroupThreads());
         EventLoopGroup worker = new NioEventLoopGroup(this.config.getWorkerLoopGroupThreads());
         ServerBootstrap bootstrap = new ServerBootstrap();
-        ((ServerBootstrap)((ServerBootstrap)((ServerBootstrap)((ServerBootstrap)bootstrap.group(boss, worker).channel(NioServerSocketChannel.class)).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.config.getConnectTimeoutMillis())).option(ChannelOption.SO_BACKLOG, this.config.getSoBacklog())).childOption(ChannelOption.WRITE_SPIN_COUNT, this.config.getWriteSpinCount()).childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(this.config.getWriteBufferLowWaterMark(), this.config.getWriteBufferHighWaterMark())).childOption(ChannelOption.TCP_NODELAY, this.config.isTcpNodelay()).childOption(ChannelOption.SO_KEEPALIVE, this.config.isSoKeepalive()).childOption(ChannelOption.SO_LINGER, this.config.getSoLinger()).childOption(ChannelOption.ALLOW_HALF_CLOSURE, this.config.isAllowHalfClosure()).handler(new LoggingHandler(LogLevel.DEBUG))).childHandler(new ChannelInitializer<NioSocketChannel>() {
-            protected void initChannel(NioSocketChannel ch) throws Exception {
-                ChannelPipeline pipeline = ch.pipeline();
-                pipeline.addLast(new ChannelHandler[]{new HttpServerCodec()});
-                pipeline.addLast(new ChannelHandler[]{new HttpObjectAggregator(131072)});
-                pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(config, encryptKeyService, producer)});
-            }
-        });
+        bootstrap.group(boss, worker)
+                .channel(NioServerSocketChannel.class)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, this.config.getConnectTimeoutMillis())
+                .option(ChannelOption.SO_BACKLOG, this.config.getSoBacklog())
+                .childOption(ChannelOption.WRITE_SPIN_COUNT, this.config.getWriteSpinCount())
+                .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(this.config.getWriteBufferLowWaterMark(), this.config.getWriteBufferHighWaterMark()))
+                .childOption(ChannelOption.TCP_NODELAY, this.config.isTcpNodelay())
+                .childOption(ChannelOption.SO_KEEPALIVE, this.config.isSoKeepalive())
+                .childOption(ChannelOption.SO_LINGER, this.config.getSoLinger())
+                .childOption(ChannelOption.ALLOW_HALF_CLOSURE, this.config.isAllowHalfClosure())
+                .handler(new LoggingHandler(LogLevel.DEBUG))
+                .childHandler(new ChannelInitializer<NioSocketChannel>() {
+                    protected void initChannel(NioSocketChannel ch) throws Exception {
+                        ChannelPipeline pipeline = ch.pipeline();
+                        pipeline.addLast(new ChannelHandler[]{new HttpServerCodec()});
+                        pipeline.addLast(new ChannelHandler[]{new HttpObjectAggregator(131072)});
+                        pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(config, encryptKeyService, producer)});
+                    }
+                });
         if (this.config.getSoRcvbuf() != -1) {
             bootstrap.childOption(ChannelOption.SO_RCVBUF, this.config.getSoRcvbuf());
         }

@@ -22,7 +22,7 @@ public class MqFuture extends FutureTask<SendResult> {
         this.resultListener = resultListener;
         if (isDone()) {
             try {
-                resultListener.onFinish(this);
+                resultListener.onSuccess(this);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("resultListener error {}", e.getMessage());
@@ -34,7 +34,7 @@ public class MqFuture extends FutureTask<SendResult> {
         set(result);
         if (resultListener != null) {
             try {
-                resultListener.onFinish(this);
+                resultListener.onSuccess(this);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("resultListener error {}", e.getMessage());
@@ -46,7 +46,7 @@ public class MqFuture extends FutureTask<SendResult> {
         setException(exception);
         if (resultListener != null) {
             try {
-                resultListener.onFinish(this);
+                resultListener.onFailure(this);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("resultListener error {}", e.getMessage());
