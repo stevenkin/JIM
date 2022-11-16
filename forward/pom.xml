@@ -9,11 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>forward-server</artifactId>
+    <artifactId>forward</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <artifactId>serialize</artifactId>
+            <groupId>com.github.stevenkin</groupId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
 </project>

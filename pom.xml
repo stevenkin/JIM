@@ -18,8 +18,7 @@
         <module>mq-api</module>
         <module>mq-redis</module>
         <module>business-server</module>
-        <module>forward-client</module>
-        <module>forward-server</module>
+        <module>forward</module>
     </modules>
     <packaging>pom</packaging>
     <name>jim</name>
