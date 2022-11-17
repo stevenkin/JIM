@@ -14,8 +14,7 @@ public class EchoBusinessHandler implements BusinessHandler{
     }
 
     @Override
-    public void process(ChannelHandlerContext ctx, Package pkg) {
+    public void process(BusinessContext ctx, Package pkg) {
         log.info("echoBusinessHandler receive package {}", pkg);
-        ctx.writeAndFlush(pkg);
     }
 }

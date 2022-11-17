@@ -1,7 +1,7 @@
 package com.github.stevenkin.jim.mq.redis;
 
-import com.github.stevenkin.jim.mq.api.Consumer;
-import com.github.stevenkin.jim.mq.api.Producer;
+import com.github.stevenkin.jim.mq.api.MqConsumer;
+import com.github.stevenkin.jim.mq.api.MqProducer;
 import com.github.stevenkin.serialize.Package;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
-@ConditionalOnClass({Producer.class, Consumer.class})
+@ConditionalOnClass({MqProducer.class, MqConsumer.class})
 @ConditionalOnProperty(prefix = "spring.redis", value = "enabled", matchIfMissing = true)
 @Import(RedisConfig.class)
 public class MqRedisAutoConfiguration {
@@ -24,14 +24,12 @@ public class MqRedisAutoConfiguration {
     private String topic;
 
     @Bean
-    @ConditionalOnMissingBean(Producer.class)
-    public Producer producer() {
-        return new RedisMqProducer(redisTemplate, topic);
+    public MqProducer producer() {
+        return new RedisMqMqProducer(redisTemplate, topic);
     }
 
     @Bean
-    @ConditionalOnMissingBean(Consumer.class)
-    public Consumer consumer() {
-        return new RedisMqConsumer(redisTemplate, topic);
+    public MqConsumer consumer() {
+        return new RedisMqMqConsumer(redisTemplate, topic);
     }
 }

@@ -8,5 +8,5 @@ import java.util.List;
 public interface BusinessHandler {
     boolean isSupport(Package pkg);
 
-    void process(ChannelHandlerContext ctx,  Package pkg);
+    void process(BusinessContext ctx,  Package pkg);
 }

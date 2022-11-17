@@ -1,24 +1,21 @@
 package com.github.stevenkin.jim.mq.redis;
 
 import com.github.stevenkin.jim.mq.api.MqFuture;
-import com.github.stevenkin.jim.mq.api.Producer;
+import com.github.stevenkin.jim.mq.api.MqProducer;
 import com.github.stevenkin.jim.mq.api.SendResult;
 import com.github.stevenkin.serialize.Package;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
-public class RedisMqProducer implements Producer {
+public class RedisMqMqProducer implements MqProducer {
     private RedisTemplate<String, Package> redisTemplate;
 
     private String topic;
 
     private boolean isClose;
 
-    public RedisMqProducer(RedisTemplate<String, Package> redisTemplate, String topic) {
+    public RedisMqMqProducer(RedisTemplate<String, Package> redisTemplate, String topic) {
         this.redisTemplate = redisTemplate;
         this.topic = topic;
         this.isClose = false;

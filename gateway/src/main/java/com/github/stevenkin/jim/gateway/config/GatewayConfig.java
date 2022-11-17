@@ -2,7 +2,7 @@ package com.github.stevenkin.jim.gateway.config;
 
 import com.github.stevenkin.jim.gateway.server.WebsocketServer;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
-import com.github.stevenkin.jim.mq.api.Producer;
+import com.github.stevenkin.jim.mq.api.MqProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +14,10 @@ public class GatewayConfig {
     @Autowired
     private EncryptKeyService encryptKeyService;
     @Autowired
-    private Producer producer;
+    private MqProducer mqProducer;
 
     @Bean
     public WebsocketServer websocketServer() {
-        return new WebsocketServer(properties, encryptKeyService, producer);
+        return new WebsocketServer(properties, encryptKeyService, mqProducer);
     }
 }

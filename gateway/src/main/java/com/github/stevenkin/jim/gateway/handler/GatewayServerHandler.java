@@ -1,7 +1,7 @@
 package com.github.stevenkin.jim.gateway.handler;
 
 import com.github.stevenkin.jim.mq.api.MqFuture;
-import com.github.stevenkin.jim.mq.api.Producer;
+import com.github.stevenkin.jim.mq.api.MqProducer;
 import com.github.stevenkin.jim.mq.api.SendResult;
 import com.github.stevenkin.serialize.Package;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,16 +12,16 @@ import static com.github.stevenkin.serialize.Constant.SEND_FAILED;
 
 @Slf4j
 public class GatewayServerHandler extends SimpleChannelInboundHandler<Package> {
-    private Producer producer;
+    private MqProducer mqProducer;
 
-    public GatewayServerHandler(Producer producer) {
-        this.producer = producer;
+    public GatewayServerHandler(MqProducer mqProducer) {
+        this.mqProducer = mqProducer;
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Package pkg) throws Exception {
         log.info("receive package {}", pkg);
-        MqFuture future = producer.send(pkg);
+        MqFuture future = mqProducer.send(pkg);
         SendResult result = null;
         try {
             result = future.get();

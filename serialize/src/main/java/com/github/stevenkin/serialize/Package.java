@@ -15,8 +15,8 @@ public class Package {
         this.body = body;
     }
 
-    public Package(String command, String channelId, long sequence, int flag, int status, String sender, String receiver, String body) {
-        this.header = new Header(command, channelId, sequence, flag, status, sender, receiver);
+    public Package(String command, String channelId, String sessionId, long sequence, int flag, int status, String sender, String receiver, String body) {
+        this.header = new Header(command, channelId, sessionId, sequence, flag, status, sender, receiver);
         this.body = body;
     }
 
@@ -28,6 +28,8 @@ public class Package {
         private String command;
 
         private String channelId;
+
+        private String sessionId;
 
         private long sequence;
 

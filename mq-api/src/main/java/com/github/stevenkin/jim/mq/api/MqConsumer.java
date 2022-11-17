@@ -2,10 +2,14 @@ package com.github.stevenkin.jim.mq.api;
 
 import com.github.stevenkin.serialize.Package;
 
-public interface Producer {
+import java.util.List;
+
+public interface MqConsumer {
     void start() throws Exception;
 
-    MqFuture send(Package pkg);
+    Package poll(int mills) throws Exception;
+
+    Package poll() throws Exception;
 
     void close() throws Exception;
 }

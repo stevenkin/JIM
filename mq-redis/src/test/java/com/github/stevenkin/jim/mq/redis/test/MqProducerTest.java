@@ -1,7 +1,6 @@
 package com.github.stevenkin.jim.mq.redis.test;
 
-import com.github.stevenkin.jim.mq.api.MqFuture;
-import com.github.stevenkin.jim.mq.api.Producer;
+import com.github.stevenkin.jim.mq.api.MqProducer;
 import com.github.stevenkin.serialize.Package;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,33 +10,33 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = TestApp.class)
-public class ProducerTest {
+public class MqProducerTest {
     @Autowired
-    private Producer producer;
+    private MqProducer mqProducer;
 
     @Test
     public void test() throws Exception {
-        producer.start();
+        mqProducer.start();
 
         Package pkg = new Package("c", "c", 1L, 1, 1, "s", "r", "start");
-        producer.send(pkg).get();
+        mqProducer.send(pkg).get();
 
         Thread.sleep(1000);
 
         Package pkg1 = new Package("c", "c", 1L, 1, 1, "s", "r", "hello");
-        producer.send(pkg1).get();
+        mqProducer.send(pkg1).get();
 
         Thread.sleep(1000);
 
         Package pkg2 = new Package("c", "c", 1L, 1, 1, "s", "r", "world");
-        producer.send(pkg2).get();
+        mqProducer.send(pkg2).get();
 
         Thread.sleep(1000);
 
         Package pkg3 = new Package("c", "c", 1L, 1, 1, "s", "r", "end");
-        producer.send(pkg3).get();
+        mqProducer.send(pkg3).get();
 
-        producer.close();
+        mqProducer.close();
 
     }
 }
