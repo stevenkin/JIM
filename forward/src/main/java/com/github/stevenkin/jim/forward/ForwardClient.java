@@ -36,10 +36,10 @@ public class ForwardClient {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         //ch.pipeline().addLast("idleStateHandler", new IdleStateHandler(10 * 3, 15 * 3, 20 * 3));
-                        ch.pipeline().addLast(new PackageDecoder(serialization));
-                        ch.pipeline().addLast(new PackageEncoder(serialization));
                         ch.pipeline().addLast(new FrameDecoder());
                         ch.pipeline().addLast(new FrameEncoder());
+                        ch.pipeline().addLast(new PackageDecoder(serialization));
+                        ch.pipeline().addLast(new PackageEncoder(serialization));
                         ch.pipeline().addLast("logs", new LoggingHandler(LogLevel.DEBUG));
                     }
                 });

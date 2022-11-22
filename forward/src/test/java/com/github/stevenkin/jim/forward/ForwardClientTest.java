@@ -15,8 +15,8 @@ public class ForwardClientTest {
     @Test
     public void test() throws Exception {
         ForwardClient client = new ForwardClient(serialization);
-        client.connect("81.68.146.28", 80);
-        Package aPackage = new Package("123", "123", "123", 1L, 2, 3, "abc", "abc", "abc");
+        client.connect("127.0.0.1", 8090);
+        Package aPackage = new Package("123", "123", 1L, 2, 3, "abc", "abc", "abc");
         client.send(aPackage);
         client.disconnect();
     }
