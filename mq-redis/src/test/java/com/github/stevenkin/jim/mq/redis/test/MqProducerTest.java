@@ -18,22 +18,22 @@ public class MqProducerTest {
     public void test() throws Exception {
         mqProducer.start();
 
-        Package pkg = new Package("c", "c", 1L, 1, 1, "s", "r", "start");
+        Package pkg = new Package("c", "c", "c",1L, 1, 1, "s", "r", "start");
         mqProducer.send(pkg).get();
 
         Thread.sleep(1000);
 
-        Package pkg1 = new Package("c", "c", 1L, 1, 1, "s", "r", "hello");
+        Package pkg1 = new Package("c", "c", "c",1L, 1, 1, "s", "r", "hello");
         mqProducer.send(pkg1).get();
 
         Thread.sleep(1000);
 
-        Package pkg2 = new Package("c", "c", 1L, 1, 1, "s", "r", "world");
+        Package pkg2 = new Package("c", "c", "c",1L, 1, 1, "s", "r", "world");
         mqProducer.send(pkg2).get();
 
         Thread.sleep(1000);
 
-        Package pkg3 = new Package("c", "c", 1L, 1, 1, "s", "r", "end");
+        Package pkg3 = new Package("c", "c", "c",1L, 1, 1, "s", "r", "end");
         mqProducer.send(pkg3).get();
 
         mqProducer.close();

@@ -1,9 +1,10 @@
 package com.github.stevenkin.jim.business.server.client;
 
-import com.github.stevenkin.jim.business.server.codec.FrameDecoder;
-import com.github.stevenkin.jim.business.server.codec.FrameEncoder;
-import com.github.stevenkin.jim.business.server.codec.PackageDecoder;
-import com.github.stevenkin.jim.business.server.codec.PackageEncoder;
+
+import com.github.stevenkin.jim.forward.FrameDecoder;
+import com.github.stevenkin.jim.forward.FrameEncoder;
+import com.github.stevenkin.jim.forward.PackageDecoder;
+import com.github.stevenkin.jim.forward.PackageEncoder;
 import com.github.stevenkin.serialize.Package;
 import com.github.stevenkin.serialize.Serialization;
 import com.github.stevenkin.serialize.SimpleSerialization;

@@ -3,6 +3,7 @@ package com.github.stevenkin.jim.mq.api;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 @Slf4j
@@ -20,13 +21,22 @@ public class MqFuture extends FutureTask<SendResult> {
 
     public void setResultListener(ResultListener resultListener) {
         this.resultListener = resultListener;
-        if (isDone()) {
+        try {
+            SendResult sendResult = get();
             try {
                 resultListener.onSuccess(this);
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error("resultListener error {}", e.getMessage());
             }
+        } catch (Exception e) {
+            try {
+                resultListener.onFailure(this);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                log.error("resultListener error {}", e.getMessage());
+            }
+            e.printStackTrace();
         }
     }
 

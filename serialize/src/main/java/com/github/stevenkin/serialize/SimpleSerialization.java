@@ -21,6 +21,7 @@ public class SimpleSerialization implements Serialization{
         if (n > 0) {
             byteBuf.writeBytes(bytes);
         }
+
         n = 0;
         bytes = null;
 
@@ -33,6 +34,20 @@ public class SimpleSerialization implements Serialization{
         if (n > 0) {
             byteBuf.writeBytes(bytes);
         }
+
+        n = 0;
+        bytes = null;
+
+        String sessionId = pkg.getHeader().getSessionId();
+        if (StringUtils.isNotEmpty(sessionId)) {
+            bytes = channelId.getBytes(StandardCharsets.UTF_8);
+            n = bytes.length;
+        }
+        byteBuf.writeInt(n);
+        if (n > 0) {
+            byteBuf.writeBytes(bytes);
+        }
+
         n = 0;
         bytes = null;
 
@@ -97,6 +112,13 @@ public class SimpleSerialization implements Serialization{
             ByteBuf buf = byteBuf.readBytes(n);
             String s = buf.toString(StandardCharsets.UTF_8);
             pkg.getHeader().setChannelId(s);
+        }
+        n = 0;
+        n = byteBuf.readInt();
+        if (n > 0) {
+            ByteBuf buf = byteBuf.readBytes(n);
+            String s = buf.toString(StandardCharsets.UTF_8);
+            pkg.getHeader().setSessionId(s);
         }
         n = 0;
         n = byteBuf.readInt();

@@ -8,7 +8,7 @@ public class ForwardServerTest {
     public void test() throws InterruptedException {
         ForwardServerHandler forwardServerHandler = new ForwardServerHandler();
         forwardServerHandler.registerProcessor(new SimpleForwardProcessor());
-        ForwardServer server = new ForwardServer(8090, forwardServerHandler, new SimpleSerialization());
+        ForwardServer server = new ForwardServer(8090, new SimpleSerialization());
         server.open();
         Thread.sleep(60000);
         server.close();

@@ -18,13 +18,23 @@ public class ForwardServer {
 
     private ChannelFuture channelFuture;
 
-    public ForwardServer(int port, ForwardServerHandler forwardServerHandler, Serialization serialization) {
+    private boolean registered = false;
+
+    public ForwardServer(int port, Serialization serialization) {
         this.port = port;
-        this.forwardServerHandler = forwardServerHandler;
+        this.forwardServerHandler = new ForwardServerHandler();
         this.serialization = serialization;
     }
 
+    public void registerProcessor(ForwardProcessor processor) {
+        forwardServerHandler.registerProcessor(processor);
+        registered = true;
+    }
+
     public void open() {
+        if (!registered) {
+            throw new RuntimeException("must register forwardProcessor");
+        }
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -43,7 +53,11 @@ public class ForwardServer {
                     }
                 });
 
-        channelFuture = bootstrap.bind(port);
+        try {
+            channelFuture = bootstrap.bind(port).sync();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         channelFuture.addListener((future) -> {
             if (!future.isSuccess()) {
