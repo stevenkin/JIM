@@ -1,5 +1,6 @@
 package com.github.stevenkin.jim.forward;
 
+import com.github.stevenkin.serialize.Frame;
 import com.github.stevenkin.serialize.Package;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-public class ForwardServerHandler extends SimpleChannelInboundHandler<Package> {
+public class ForwardServerHandler extends SimpleChannelInboundHandler<Frame> {
     private List<ForwardProcessor> forwardProcessors = new ArrayList<>();
 
     public void registerProcessor(ForwardProcessor processor) {
@@ -17,7 +18,7 @@ public class ForwardServerHandler extends SimpleChannelInboundHandler<Package> {
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Package msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Frame msg) throws Exception {
         forwardProcessors.forEach( p -> {
             try {
                 p.process(ctx, msg);

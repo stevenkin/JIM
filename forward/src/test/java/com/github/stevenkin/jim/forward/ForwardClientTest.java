@@ -2,14 +2,14 @@ package com.github.stevenkin.jim.forward;
 
 import com.github.stevenkin.serialize.Package;
 import com.github.stevenkin.serialize.Serialization;
-import com.github.stevenkin.serialize.SimpleSerialization;
+import com.github.stevenkin.serialize.PackageSerialization;
 import org.junit.Test;
 
 public class ForwardClientTest {
     private Serialization serialization;
 
     public ForwardClientTest() {
-        this.serialization = new SimpleSerialization();
+        this.serialization = new PackageSerialization();
     }
 
     @Test

@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 
-public class SimpleSerialization implements Serialization{
+public class PackageSerialization implements Serialization<Package> {
     @Override
     public ByteBuf serialize(Package pkg, ByteBuf byteBuf) {
         //write package header

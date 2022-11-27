@@ -2,10 +2,10 @@ package com.github.stevenkin.jim.router;
 
 import com.github.stevenkin.jim.forward.ForwardProcessor;
 import com.github.stevenkin.jim.forward.ForwardServer;
+import com.github.stevenkin.jim.mq.api.MqConsumer;
 import com.github.stevenkin.jim.mq.api.MqFuture;
-import com.github.stevenkin.jim.mq.api.MqProducer;
 import com.github.stevenkin.jim.mq.api.ResultListener;
-import com.github.stevenkin.serialize.Package;
+import com.github.stevenkin.serialize.Frame;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
@@ -16,27 +16,37 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 @Slf4j
 @Component
-public class RouteInboundServer implements ForwardProcessor, ApplicationContextAware, InitializingBean, DisposableBean {
+public class RouteServer implements ForwardProcessor, ApplicationContextAware, InitializingBean, DisposableBean {
     @Autowired
     private ForwardServer forwardServer;
     @Autowired
-    private MqProducer mqProducer;
+    private MqConsumer mqConsumer;
+    @Autowired
+    private RouteDistributor routeDistributor;
 
     private ApplicationContext applicationContext;
+
+    private Set<RouteFrameHandler> routeFrameHandlers;
 
     @Override
     public void destroy() throws Exception {
         forwardServer.close();
-        mqProducer.close();
+        mqConsumer.close();
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        mqProducer.start();
+        mqConsumer.start();
         forwardServer.registerProcessor(this);
         forwardServer.open();
+        Map<String, RouteFrameHandler> beansOfType = applicationContext.getBeansOfType(RouteFrameHandler.class);
+        routeFrameHandlers = new HashSet<>(beansOfType.values());
     }
 
     @Override
@@ -45,17 +55,14 @@ public class RouteInboundServer implements ForwardProcessor, ApplicationContextA
     }
 
     @Override
-    public void process(ChannelHandlerContext ctx, Package msg) throws Exception {
-        MqFuture future = mqProducer.send(msg);
-        future.setResultListener(new ResultListener() {
-            @Override
-            public void onSuccess(MqFuture future) throws Exception {
-                log.debug("send package to mq success {}", msg);
-            }
-
-            @Override
-            public void onFailure(MqFuture future) throws Exception {
-                log.error("send package to mq fail {}", msg);
+    public void process(ChannelHandlerContext ctx, Frame msg) throws Exception {
+        routeFrameHandlers.forEach(h -> {
+            if (h.isMatch(msg)) {
+                try {
+                    h.handle(msg);
+                } catch (Exception e) {
+                    log.error(h.getClass() + " handle frame " + msg + "error", e);
+                }
             }
         });
     }

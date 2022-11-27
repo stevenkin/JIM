@@ -2,19 +2,15 @@ package com.github.stevenkin.jim.business.server.config;
 
 import com.github.stevenkin.jim.business.server.BusinessDistributor;
 import com.github.stevenkin.jim.mq.api.MqConsumer;
-import com.github.stevenkin.jim.mq.api.MqProducer;
 import com.github.stevenkin.serialize.Serialization;
-import com.github.stevenkin.serialize.SimpleSerialization;
+import com.github.stevenkin.serialize.PackageSerialization;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-
-import java.util.concurrent.ExecutorService;
 
 @Configuration
 public class BusinessServerConfig implements EnvironmentAware, ApplicationContextAware {
@@ -24,7 +20,7 @@ public class BusinessServerConfig implements EnvironmentAware, ApplicationContex
 
     @Bean
     public Serialization serialization() {
-        return new SimpleSerialization();
+        return new PackageSerialization();
     }
 
     @Bean

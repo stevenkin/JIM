@@ -7,7 +7,7 @@ import com.github.stevenkin.jim.forward.PackageDecoder;
 import com.github.stevenkin.jim.forward.PackageEncoder;
 import com.github.stevenkin.serialize.Package;
 import com.github.stevenkin.serialize.Serialization;
-import com.github.stevenkin.serialize.SimpleSerialization;
+import com.github.stevenkin.serialize.PackageSerialization;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -30,7 +30,7 @@ public class ClientV0 {
 
         NioEventLoopGroup group = new NioEventLoopGroup();
 
-        Serialization serialization = new SimpleSerialization();
+        Serialization serialization = new PackageSerialization();
         try {
 
             bootstrap.group(group);
