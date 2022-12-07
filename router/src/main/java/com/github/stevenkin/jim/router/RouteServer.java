@@ -12,6 +12,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -59,7 +60,7 @@ public class RouteServer implements ForwardProcessor, ApplicationContextAware, I
         routeFrameHandlers.forEach(h -> {
             if (h.isMatch(msg)) {
                 try {
-                    h.handle(msg);
+                    h.handle(ctx, msg);
                 } catch (Exception e) {
                     log.error(h.getClass() + " handle frame " + msg + "error", e);
                 }

@@ -17,7 +17,7 @@ public class FrameSerialization implements Serialization<Frame> {
         int opCode = msg.getOpCode();
         byteBuf.writeInt(opCode);
 
-        String clientIP = msg.getControl().getClientIP();
+        String clientIP = msg.getControl().getSourceIP();
         if (StringUtils.isNotEmpty(clientIP)) {
             bytes = clientIP.getBytes(StandardCharsets.UTF_8);
             n = bytes.length;
@@ -29,10 +29,10 @@ public class FrameSerialization implements Serialization<Frame> {
         n = 0;
         bytes = null;
 
-        int clientPort = msg.getControl().getClientPort();
+        int clientPort = msg.getControl().getSourcePort();
         byteBuf.writeInt(clientPort);
 
-        String appName = msg.getControl().getAppName();
+        String appName = msg.getControl().getDestAppName();
         if (StringUtils.isNotEmpty(appName)) {
             bytes = appName.getBytes(StandardCharsets.UTF_8);
             n = bytes.length;
@@ -44,7 +44,7 @@ public class FrameSerialization implements Serialization<Frame> {
         n = 0;
         bytes = null;
 
-        String appToken = msg.getControl().getAppToken();
+        String appToken = msg.getControl().getDestAppToken();
         if (StringUtils.isNotEmpty(appToken)) {
             bytes = appToken.getBytes(StandardCharsets.UTF_8);
             n = bytes.length;
@@ -87,23 +87,23 @@ public class FrameSerialization implements Serialization<Frame> {
         if (n > 0) {
             ByteBuf buf = byteBuf.readBytes(n);
             String s = buf.toString(StandardCharsets.UTF_8);
-            frame.getControl().setClientIP(s);
+            frame.getControl().setSourceIP(s);
         }
         n = 0;
 
-        frame.getControl().setClientPort(byteBuf.readInt());
+        frame.getControl().setSourcePort(byteBuf.readInt());
 
         if (n > 0) {
             ByteBuf buf = byteBuf.readBytes(n);
             String s = buf.toString(StandardCharsets.UTF_8);
-            frame.getControl().setAppName(s);
+            frame.getControl().setDestAppName(s);
         }
         n = 0;
 
         if (n > 0) {
             ByteBuf buf = byteBuf.readBytes(n);
             String s = buf.toString(StandardCharsets.UTF_8);
-            frame.getControl().setAppToken(s);
+            frame.getControl().setDestAppToken(s);
         }
         n = 0;
 

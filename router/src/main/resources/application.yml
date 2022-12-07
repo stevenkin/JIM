@@ -18,3 +18,5 @@ jim:
   mq:
     redis:
       topic: test
+  route:
+    mq-consumer-thread: 1
