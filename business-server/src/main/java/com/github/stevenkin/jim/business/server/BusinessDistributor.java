@@ -3,12 +3,9 @@ package com.github.stevenkin.jim.business.server;
 import com.github.stevenkin.jim.business.server.business.BusinessContext;
 import com.github.stevenkin.jim.business.server.business.BusinessHandler;
 import com.github.stevenkin.jim.business.server.utils.ExecutorUtil;
-import com.github.stevenkin.jim.mq.api.MqConsumer;
 import com.github.stevenkin.serialize.Package;
-import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Map;
@@ -17,8 +14,6 @@ import java.util.concurrent.ExecutorService;
 
 @Slf4j
 public class BusinessDistributor implements Runnable {
-    private MqConsumer mqConsumer;
-
     private ApplicationContext applicationContext;
 
     private ExecutorService executorService;
@@ -27,8 +22,7 @@ public class BusinessDistributor implements Runnable {
 
     private Map<String, BusinessContext> businessContextMap;
 
-    public BusinessDistributor(MqConsumer mqConsumer, ApplicationContext applicationContext) {
-        this.mqConsumer = mqConsumer;
+    public BusinessDistributor( ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
         Map<String, BusinessHandler> beansOfType = applicationContext.getBeansOfType(BusinessHandler.class);
         Collection<BusinessHandler> values = beansOfType.values();
@@ -41,7 +35,7 @@ public class BusinessDistributor implements Runnable {
     public void run() {
         for (; ;) {
             try {
-                Package aPackage = mqConsumer.poll(10);
+                Package aPackage = null;//TODO 需要重新实现
                 executorService.submit(() -> {
                     String sessionId = aPackage.getHeader().getSessionId();
                     BusinessContext ctx = businessContextMap.computeIfAbsent(sessionId, (key) -> new BusinessContext());

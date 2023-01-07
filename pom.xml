@@ -15,8 +15,6 @@
         <module>gateway</module>
         <module>serialize</module>
         <module>discovery</module>
-        <module>mq-api</module>
-        <module>mq-redis</module>
         <module>business-server</module>
         <module>forward</module>
         <module>router</module>

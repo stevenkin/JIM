@@ -1,7 +1,6 @@
 package com.github.stevenkin.jim.business.server.config;
 
 import com.github.stevenkin.jim.business.server.BusinessDistributor;
-import com.github.stevenkin.jim.mq.api.MqConsumer;
 import com.github.stevenkin.serialize.Serialization;
 import com.github.stevenkin.serialize.PackageSerialization;
 import org.springframework.beans.BeansException;
@@ -26,8 +25,7 @@ public class BusinessServerConfig implements EnvironmentAware, ApplicationContex
     @Bean
     public BusinessDistributor businessDistributor(Serialization serialization) throws ClassNotFoundException {
         String mqConsumerImpl = environment.getProperty("mqConsumer", "com.github.stevenkin.jim.mq.redis.RedisMqMqConsumer");
-        MqConsumer consumer =(MqConsumer) (applicationContext.getBean(Class.forName(mqConsumerImpl)));
-        return new BusinessDistributor(consumer, applicationContext);
+        return new BusinessDistributor(applicationContext);
     }
 
     @Override

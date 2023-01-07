@@ -2,9 +2,6 @@ package com.github.stevenkin.jim.router;
 
 import com.github.stevenkin.jim.forward.ForwardProcessor;
 import com.github.stevenkin.jim.forward.ForwardServer;
-import com.github.stevenkin.jim.mq.api.MqConsumer;
-import com.github.stevenkin.jim.mq.api.MqFuture;
-import com.github.stevenkin.jim.mq.api.ResultListener;
 import com.github.stevenkin.serialize.Frame;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +24,6 @@ public class RouteServer implements ForwardProcessor, ApplicationContextAware, I
     @Autowired
     private ForwardServer forwardServer;
     @Autowired
-    private MqConsumer mqConsumer;
-    @Autowired
     private RouteDistributor routeDistributor;
 
     private ApplicationContext applicationContext;
@@ -38,12 +33,10 @@ public class RouteServer implements ForwardProcessor, ApplicationContextAware, I
     @Override
     public void destroy() throws Exception {
         forwardServer.close();
-        mqConsumer.close();
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        mqConsumer.start();
         forwardServer.registerProcessor(this);
         forwardServer.open();
         Map<String, RouteFrameHandler> beansOfType = applicationContext.getBeansOfType(RouteFrameHandler.class);

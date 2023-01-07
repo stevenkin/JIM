@@ -3,7 +3,6 @@ package com.github.stevenkin.jim.gateway.server;
 import com.github.stevenkin.jim.gateway.config.GatewayProperties;
 import com.github.stevenkin.jim.gateway.handler.HttpServerHandler;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
-import com.github.stevenkin.jim.mq.api.MqProducer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -24,13 +23,11 @@ import java.net.UnknownHostException;
 public class WebsocketServer implements SmartInitializingSingleton, ApplicationListener<ContextClosedEvent> {
     private final GatewayProperties config;
     private EncryptKeyService encryptKeyService;
-    private MqProducer mqProducer;
     private ChannelFuture channelFuture;
 
-    public WebsocketServer(GatewayProperties config, EncryptKeyService service, MqProducer mqProducer) {
+    public WebsocketServer(GatewayProperties config, EncryptKeyService service) {
         this.config = config;
         this.encryptKeyService = service;
-        this.mqProducer = mqProducer;
     }
 
     public void init() {
@@ -53,7 +50,7 @@ public class WebsocketServer implements SmartInitializingSingleton, ApplicationL
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new ChannelHandler[]{new HttpServerCodec()});
                         pipeline.addLast(new ChannelHandler[]{new HttpObjectAggregator(131072)});
-                        pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(config, encryptKeyService, mqProducer)});
+                        pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(config, encryptKeyService)});
                     }
                 });
         if (this.config.getSoRcvbuf() != -1) {

@@ -3,7 +3,6 @@ package com.github.stevenkin.jim.gateway.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.github.stevenkin.jim.gateway.config.GatewayProperties;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
-import com.github.stevenkin.jim.mq.api.MqProducer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
@@ -38,8 +37,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
     private static ByteBuf forbiddenByteBuf = null;
     private static ByteBuf internalServerErrorByteBuf = null;
 
-    private MqProducer mqProducer;
-
     private static ByteBuf buildStaticRes(String resPath) {
         try {
             InputStream inputStream = HttpServerHandler.class.getResourceAsStream(resPath);
@@ -57,10 +54,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         return null;
     }
 
-    public HttpServerHandler(GatewayProperties config, EncryptKeyService service, MqProducer mqProducer) {
+    public HttpServerHandler(GatewayProperties config, EncryptKeyService service) {
         this.config = config;
         this.encryptKeyService = service;
-        this.mqProducer = mqProducer;
     }
 
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
@@ -189,7 +185,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                                 }
                             };
                             NioEventLoopGroup business = new NioEventLoopGroup(200,threadFactory);
-                            pipeline.addLast(business, new ChannelHandler[]{new GatewayServerHandler(mqProducer)});
+                            pipeline.addLast(business, new ChannelHandler[]{new GatewayServerHandler()});
 
                             HttpHeaders headers1 = new DefaultHttpHeaders().add("SERVER_PUBLIC_KEY", encryptKeyService.getPublicKey());
                             handshaker.handshake(channel, req, headers1, channel.newPromise()).addListener((future) -> {

@@ -1,6 +1,5 @@
 package com.github.stevenkin.jim.router;
 
-import com.github.stevenkin.jim.mq.api.MqConsumer;
 import com.github.stevenkin.serialize.Frame;
 import com.github.stevenkin.serialize.Package;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +14,11 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+//TODO 需要重新实现
 @Component
 @Slf4j
 public class RouteDistributor implements InitializingBean, DisposableBean {
-    @Autowired
-    private MqConsumer mqConsumer;
     @Autowired
     private RouteStrategy routeStrategy;
     @Autowired
@@ -31,14 +30,12 @@ public class RouteDistributor implements InitializingBean, DisposableBean {
 
     @Override
     public void destroy() throws Exception {
-        mqConsumer.close();
         mqConsumerService.shutdown();
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         mqConsumerService = Executors.newFixedThreadPool(mqConsumerThread);
-        mqConsumer.start();
     }
 
     public void start() {
@@ -46,7 +43,8 @@ public class RouteDistributor implements InitializingBean, DisposableBean {
             mqConsumerService.submit(() -> {
                 for (; ;) {
                     try {
-                        Package aPackage = mqConsumer.poll(100);
+                        //TODO 传输失败重传
+                        Package aPackage = null;
                         List<Server> cluster = businessServerCluster.getCluster();
                         Set<Server> servers = routeStrategy.choose((Set<Server>) cluster, aPackage);
                         servers.stream().filter(Server::isActive).forEach(s -> {

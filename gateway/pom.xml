@@ -28,7 +28,7 @@
         </dependency>
 
         <dependency>
-            <artifactId>mq-redis</artifactId>
+            <artifactId>serialize</artifactId>
             <groupId>com.github.stevenkin</groupId>
             <version>1.0</version>
         </dependency>
