@@ -1,4 +1,4 @@
-package com.github.stevenkin.jim.router;
+package com.github.stevenkin.jim.gateway.router;
 
 import com.github.stevenkin.jim.forward.ForwardServer;
 import com.github.stevenkin.serialize.PackageSerialization;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RouteConfig {
-    @Value("${server.port}")
+    @Value("${router.port}")
     private Integer port;
 
     @Bean

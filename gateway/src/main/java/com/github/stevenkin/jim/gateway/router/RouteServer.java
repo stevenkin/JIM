@@ -1,4 +1,4 @@
-package com.github.stevenkin.jim.router;
+package com.github.stevenkin.jim.gateway.router;
 
 import com.github.stevenkin.jim.forward.ForwardProcessor;
 import com.github.stevenkin.jim.forward.ForwardServer;
@@ -9,7 +9,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;

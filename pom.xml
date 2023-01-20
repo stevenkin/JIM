@@ -17,7 +17,6 @@
         <module>discovery</module>
         <module>business-server</module>
         <module>forward</module>
-        <module>router</module>
     </modules>
     <packaging>pom</packaging>
     <name>jim</name>

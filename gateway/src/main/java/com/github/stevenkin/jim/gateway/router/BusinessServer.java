@@ -1,9 +1,8 @@
-package com.github.stevenkin.jim.router;
+package com.github.stevenkin.jim.gateway.router;
 
 import com.github.stevenkin.serialize.Frame;
 import io.netty.channel.Channel;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;

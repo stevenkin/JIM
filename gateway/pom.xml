@@ -32,6 +32,13 @@
             <groupId>com.github.stevenkin</groupId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <artifactId>forward</artifactId>
+            <groupId>com.github.stevenkin</groupId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
 
 

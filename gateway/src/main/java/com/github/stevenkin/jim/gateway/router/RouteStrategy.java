@@ -1,4 +1,4 @@
-package com.github.stevenkin.jim.router;
+package com.github.stevenkin.jim.gateway.router;
 
 import com.github.stevenkin.serialize.Package;
 
