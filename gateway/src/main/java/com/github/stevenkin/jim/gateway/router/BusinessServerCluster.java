@@ -3,6 +3,7 @@ package com.github.stevenkin.jim.gateway.router;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class BusinessServerCluster {
@@ -27,8 +28,12 @@ public class BusinessServerCluster {
         }, 5000L);
     }
 
-    public List<Server> getCluster() {
+    public List<Server> getAllCluster() {
         return new ArrayList<>(servers);
+    }
+
+    public List<Server> getCluster(String service) {
+        return servers.stream().filter(s -> s.info().getAppName().equals(service)).collect(Collectors.toList());
     }
 
     public void serverOnline(Server server) {

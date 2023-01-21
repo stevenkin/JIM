@@ -1,6 +1,7 @@
 package com.github.stevenkin.jim.gateway.config;
 
 import com.github.stevenkin.jim.forward.ForwardServer;
+import com.github.stevenkin.jim.gateway.handler.GatewayServerHandler;
 import com.github.stevenkin.jim.gateway.server.WebsocketServer;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
 import com.github.stevenkin.serialize.FrameSerialization;
@@ -17,7 +18,12 @@ public class GatewayConfig {
     private EncryptKeyService encryptKeyService;
 
     @Bean
-    public WebsocketServer websocketServer() {
-        return new WebsocketServer(properties, encryptKeyService);
+    public GatewayServerHandler gatewayServerHandler() {
+        return new GatewayServerHandler();
+    }
+
+    @Bean
+    public WebsocketServer websocketServer(GatewayServerHandler gatewayServerHandler) {
+        return new WebsocketServer(properties, gatewayServerHandler, encryptKeyService);
     }
 }

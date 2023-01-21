@@ -12,7 +12,7 @@ public class ServerInfo {
 
     private int appThreadNum;
 
-    private String clientIP;
+    private String serverIP;
 
-    private int clientPort;
+    private int serverPort;
 }

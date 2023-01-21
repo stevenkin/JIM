@@ -1,6 +1,7 @@
 package com.github.stevenkin.jim.gateway.server;
 
 import com.github.stevenkin.jim.gateway.config.GatewayProperties;
+import com.github.stevenkin.jim.gateway.handler.GatewayServerHandler;
 import com.github.stevenkin.jim.gateway.handler.HttpServerHandler;
 import com.github.stevenkin.jim.gateway.service.EncryptKeyService;
 import io.netty.bootstrap.ServerBootstrap;
@@ -25,9 +26,12 @@ public class WebsocketServer implements SmartInitializingSingleton, ApplicationL
     private EncryptKeyService encryptKeyService;
     private ChannelFuture channelFuture;
 
-    public WebsocketServer(GatewayProperties config, EncryptKeyService service) {
+    private GatewayServerHandler gatewayServerHandler;
+
+    public WebsocketServer(GatewayProperties config, GatewayServerHandler gatewayServerHandler, EncryptKeyService service) {
         this.config = config;
         this.encryptKeyService = service;
+        this.gatewayServerHandler = gatewayServerHandler;
     }
 
     public void init() {
@@ -50,7 +54,7 @@ public class WebsocketServer implements SmartInitializingSingleton, ApplicationL
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new ChannelHandler[]{new HttpServerCodec()});
                         pipeline.addLast(new ChannelHandler[]{new HttpObjectAggregator(131072)});
-                        pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(config, encryptKeyService)});
+                        pipeline.addLast(new ChannelHandler[]{new HttpServerHandler(gatewayServerHandler, config, encryptKeyService)});
                     }
                 });
         if (this.config.getSoRcvbuf() != -1) {

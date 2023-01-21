@@ -3,6 +3,7 @@ package com.github.stevenkin.jim.gateway.router;
 import com.github.stevenkin.jim.forward.NetworkUtil;
 import com.github.stevenkin.jim.forward.ServerAuthService;
 import com.github.stevenkin.serialize.Frame;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-/**
- * 路由服务接受下游业务服务器的连接请求需要鉴权
- */
 @Component
 @Slf4j
 public class BusinessAuthHandler implements RouteFrameHandler {
@@ -27,7 +25,7 @@ public class BusinessAuthHandler implements RouteFrameHandler {
     private String appName;
     @Value("${jim.appToken}")
     private String appToken;
-    @Value("${server.port}")
+    @Value("${router.port}")
     private Integer port;
 
     @Override
@@ -53,8 +51,8 @@ public class BusinessAuthHandler implements RouteFrameHandler {
             ServerInfo info = new ServerInfo();
             info.setAppName(control.getSourceAppName());
             info.setAppToken(control.getSourceAppToken());
-            info.setClientIP(control.getSourceIP());
-            info.setClientPort(control.getSourcePort());
+            info.setServerIP(control.getSourceIP());
+            info.setServerPort(control.getSourcePort());
             info.setAppThreadNum(control.getAppThreadNum());
             info.setAppWaitTaskNum(control.getAppWaitTaskNum());
             Server server = new BusinessServer(ctx.channel(), scheduledExecutorService, this.appName, this.appToken, info, NetworkUtil.getLocalHost(), port);
@@ -63,6 +61,6 @@ public class BusinessAuthHandler implements RouteFrameHandler {
             log.error("app {}, token {} BusinessAuthHandler fail, frame {}", appName, appToken, frame);
             frame1.setOpCode(0x20);
         }
-        ctx.writeAndFlush(frame1);
+        ctx.writeAndFlush(frame1).addListener(ChannelFutureListener.CLOSE);
     }
 }

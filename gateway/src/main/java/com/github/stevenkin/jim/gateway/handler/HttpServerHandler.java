@@ -30,6 +30,7 @@ import static com.github.stevenkin.serialize.Constant.CLIENT_PUBLIC_KEY;
 @Slf4j
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private final GatewayProperties config;
+    private GatewayServerHandler gatewayServerHandler;
     private final EncryptKeyService encryptKeyService;
     private static ByteBuf faviconByteBuf = null;
     private static ByteBuf notFoundByteBuf = null;
@@ -54,9 +55,10 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
         return null;
     }
 
-    public HttpServerHandler(GatewayProperties config, EncryptKeyService service) {
+    public HttpServerHandler(GatewayServerHandler gatewayServerHandler, GatewayProperties config, EncryptKeyService service) {
         this.config = config;
         this.encryptKeyService = service;
+        this.gatewayServerHandler = gatewayServerHandler;
     }
 
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
@@ -185,7 +187,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
                                 }
                             };
                             NioEventLoopGroup business = new NioEventLoopGroup(200,threadFactory);
-                            pipeline.addLast(business, new ChannelHandler[]{new GatewayServerHandler()});
+                            pipeline.addLast(business, new ChannelHandler[]{gatewayServerHandler});
 
                             HttpHeaders headers1 = new DefaultHttpHeaders().add("SERVER_PUBLIC_KEY", encryptKeyService.getPublicKey());
                             handshaker.handshake(channel, req, headers1, channel.newPromise()).addListener((future) -> {

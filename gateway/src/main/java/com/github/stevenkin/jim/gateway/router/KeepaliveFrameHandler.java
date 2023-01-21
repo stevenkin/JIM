@@ -23,8 +23,8 @@ public class KeepaliveFrameHandler implements RouteFrameHandler{
         serverInfo.setAppToken(control.getSourceAppToken());
         serverInfo.setAppWaitTaskNum(control.getAppWaitTaskNum());
         serverInfo.setAppThreadNum(control.getAppThreadNum());
-        serverInfo.setClientIP(control.getSourceIP());
-        serverInfo.setClientPort(control.getSourcePort());
+        serverInfo.setServerIP(control.getSourceIP());
+        serverInfo.setServerPort(control.getSourcePort());
         businessServerCluster.update(serverInfo);
     }
 }
